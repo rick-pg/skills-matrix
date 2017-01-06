@@ -1,0 +1,178 @@
+
+<html>
+<head>
+    <title>Browseable engineering skills matrix</title>
+
+    <style type="text/css">
+    body {
+    	font-family: Helvetica, sans-serif;
+    }
+    h1 {
+    	width: 90%;
+    	margin: 20px auto !important;
+    	text-align: left;
+    }
+    h1 img {
+    	vertical-align: baseline;
+    	float: right;
+    }
+    #content {
+    	border: 1px solid #999;
+    	margin: 20px auto 4px;
+    	overflow: auto;
+    	width: 90%;
+    }
+    #disciplineNav {
+    	width: 25%;
+    	margin: 0;
+    	float: left;
+    	list-style: none;	
+    }
+    #disciplineNav li {
+    	background-color: #ddd;
+    	border: 1px inset #fff;
+    	padding: 4px;
+    }
+    #disciplineNav li.active {
+    	border: 1px outset #fff;
+	}    
+    #disciplineNav li.active span {
+    	text-shadow: 1px 1px #aaa;
+	}    
+    #disciplineNav li.craft {
+    	background-color: #b6d7a8;
+	}
+    #disciplineNav li.team {
+    	background-color: #a2c4c9;
+	}
+    #disciplineNav li.results {
+    	background-color: #a4c2f4;
+	}
+    #disciplineNav li:hover i {
+    	text-shadow: 1px 1px #aaa;
+    }
+    i.icon-pushpin {
+    	display: inline-block;
+    	padding: 0 4px;
+    	color: transparent;
+    }
+    i.icon-pushpin.pinned {
+    	color: #333;
+    }
+    #detailsView {
+    	margin: 16px 0 16px 60px;
+    	width: 55%;
+    	float: left;
+    }
+    #detailsView li {
+    	padding: 2px;
+    }
+    h2 {
+    	margin-top: 0;
+    }
+    h2.craft {
+    	border-bottom: 1px solid #b6d7a8;
+    }
+    h2.team {
+    	border-bottom: 1px solid #a2c4c9;
+    }
+    h2.results {
+    	border-bottom: 1px solid #a4c2f4;
+    }
+    #generated {
+    	width: 90%;
+    	margin: 0 auto;
+    	font-size: 11px;
+    }
+    </style>
+	<link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
+	<link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+
+</head>
+<body ng-app="MatrixViewerApp" ng-controller="matrixViewerController">
+<h1>
+	<img src="http://pocketgems.com/wp-content/themes/pocket-gems/images/pg-new-logo.png"/>
+	Engineering Skills Matrix
+</h1>
+<div id="content">
+	<ul id="disciplineNav">
+	    <li ng-repeat="discipline in disciplines | orderBy:sortKey" ng-class="[categories[discipline], {active: discipline == curDisc}]" ng-click="setDiscipline(discipline)">
+	    	<i ng-class="[icon-pushpin, {pinned: pinned[discipline]}]" class="icon-pushpin" ng-click="togglePin(discipline)"></i>
+	    	<span>{{ discipline }}</span>
+	    </li>
+	</ul>
+	<div id="detailsView">
+	    <h2 class="{{ categories[curDisc] }}">{{ curDisc }}</h1>
+
+	    <Ul>
+	    	<li ng-repeat="skill in skills[curDisc]">{{ skill }}</li>
+	    </ul>
+	</div>
+</div>
+<div id="generated">
+	Last updated: {{ timestamp }}
+</div>
+<script>
+
+var disciplines = [" General - Code Design", " General - Code Quality / Skill", "Game Play Engineering", "Cross-platform & Compilers", "Networking, Multiplayer, Social", "Graphics", "Backend (general + GAE)", "Analytics", "Web Frontend", "Tools / Pipeline / Platform", "Technological Leadership", "Team", "Mentorship", "Recruiting", "Leadership", "Software Engineering", "Eng Culture Building", "(General)", "Business Results", "Institutional Technology"];
+var categories = {" General - Code Quality / Skill": "craft", "Backend (general + GAE)": "craft", "Web Frontend": "craft", "Eng Culture Building": "team", "Software Engineering": "team", " General - Code Design": "craft", "Recruiting": "team", "Tools / Pipeline / Platform": "craft", "Networking, Multiplayer, Social": "craft", "Institutional Technology": "results", "(General)": "results", "Analytics": "craft", "Leadership": "team", "Game Play Engineering": "craft", "Cross-platform & Compilers": "craft", "Graphics": "craft", "Business Results": "results", "Mentorship": "team", "Team": "team", "Technological Leadership": "craft"};
+var skills = {" General - Code Quality / Skill": ["Actively develops own functional expertise and applies vast domain knowledge of languages / platforms", "Modifies code written by other engineers", "Internalizes the coding standards and style guide", "Writes simple, legible, and maintainable code", "Writes commit comments giving full context for changes", "Identifies correctness and maintainability issues in code reviews", "Includes comprehensive unit tests with pull requests for features and bug fixes", "Debugs issues involving machine architecture (registers, I/O, basic assembly language), memory models (pointers, memory allocation, data representation), compilation (stack frames, semantic analysis, code generation), and basic concurrency (threading, synchronization)", "Troubleshoots major issues independently and expeditiously; highly available to assist others", "Selects and integrates third party libraries based on expected use cases", "Strategically improves unit test coverage of legacy code bases", "Consistently designs & implements challenging & major projects at a high level of quality"], "Backend (general + GAE)": ["Tasklets / concurrency; Accuracy vs scale tradeoffs; Caching strategies; Sharding and aggregation; Task Tombstones; Contention avoidance, mitigation, workarounds", "Backend/manual VM pools for long-running calcs (e.g., territory map)", "Troubleshooting minor service disruptions (e.g., minor ones like elevated service latency, major ones like cross-country data center migration)", "Troubleshooting low-level infrastructure bugs (e.g., memory leaks on remote rootless servers, impact of task names on async job throughput due to rootless servers, impact of task names on async job throughput due to Google sharding algo, ...)", "Troubleshoot dbsync issues, building blocks, txmodel, casmanager, chained/sharded tasks, properties (classproperty, compress, etc), cacher", "Mapreduce (roll backable, reduce functions, unsticking jobs, ...)", "Real-time systems (continuous systems modeled via discrete updates; IncrementalModel; global matchmaking [e.g., events, league assignments, real-time pairing, offline pairing, ...])", "Automated problem identification and tooling (e.g., task queue monitoring, End-to-end battle report latency monitoring)", "Datastore expertise (index scaling / combinatorics; entity groups and ancestors; namespaces; eventual consistency; paxos / megastore / bigtable perf characteristics; query vs key use cases and perf; regional differences)", "Accurate, scalable, responsive Ranking Systems (small vs large scale tradeoffs; contention; rankers; voting)", "Targeting systems (player filtering for A/B tests, marketing, etc.)", "Remote analysis / debugging (memory tracing, infrastructure API call waterfall analysis, corrupt data recovery, selective logging & bigquery analysis, traces)", "Memory-intensive algorithm / data structure development (e.g., LTV analysis, high-speed RTB in-memory decision tree evaluation)"], "Web Frontend": ["Proficiency with HTML, DOM manipulation", "Proficiency with HTML templating engines (maksetTo/django)", "Proficiency with CSS Frameworks (e.g., Bootstrap), Box Model and selectors", "Familiarity with GAE (Ex. mvc basics, persistence, scalability)", "Understanding of asynchronous loading: Promises, AJAX, etc", "Mastery of browser debugging tools & techniques (\"Developer Tools\")", "Cross-browser compatibility and deep knowledge of handling browser-specific issues (ex. Apple & Android webview implementation)", "JavaScript mastery including jQuery, AngularJS", "Python mastery", "Experience building reusable and maintainable view components", "Experience with Canvas and techniques such as tag manipulation", "Proficiency with complex page load optimization strategies (ex. CDNs, asset caching, asset pre-loading, pagination, caching models & views, etc)", "Understanding visual libraries (Spine, etc) and WebGL", "Proficiency with responsive web design (e.g., BI tool, growth tool, staff tool)", "Advanced CSS Techniques (Animations, Shapes, Filters, Etc)"], "Eng Culture Building": ["Actively trains teammates to help them learn and improve their rate of learning", "Facilitates significant knowledge sharing across the company (e.g., Slack, PGU, Tech talks)", "Actively contributes to improving the engineering culture on own team and other teams", "Identifies long term problems affecting the engineering organization, and actively participates in solving them", "Helps create awareness about our Engine by giving Tech Talks internally e.g. Company meetings, and externally e.g. GDC"], "Software Engineering": ["Has a high awareness of the product and how each function works together to build it", "Empathizes with users and proactively addresses their needs", "Creates comprehensive and detailed test plans with QA", "Provides consistently prompt and high quality code reviews for teammates", "Accurately estimates schedule for projects, with increasingly long timelines and cross-team and cross-functional dependencies as seniority increases", "Serves on an on-call rotation and responds to fires in a timely and appropriate manner", "Contributes to the runbook and tooling for an on call rotation", "Highlights schedule risks to relevant stakeholders in a timely fashion and works cross-functionally to mitigate them", "Communicates with technical and non-technical team members with the appropriate level of abstraction for the audience", "Creates and maintains tools to increase the productivity of the team", "Leads productive post-mortems in response to live issues resulting in meaningful changes", "Regularly considers new technologies and/or best practices in the broader ecosystem to incorporate into PG teams and products"], " General - Code Design": ["Creates thorough technical specifications for projects prior to beginning implementation", "Writes extensible code without over-engineering", "Implements reusable components and tools as a normal course of projects", "Addresses both simple and complex challenges with commonly-understood design patterns", "Applies the appropriate level of engineering for a given feature and timeline, finding the balance between under- and over-engineering", "Debugs and designs code involving processes (threading, context switching, interprocess communication), storage and file management (file systems, virtual memory), networking (sockets, TCP/IP, routing), and distributed systems", "Develops large & performance-sensitive features", "Understands & leverages platform strengths and limitations", "Leads engineering design reviews and contributes sophisticated feedback to colleagues", "Has a deep and thorough understanding of the team's tech stack (e.g., Game level code, cocos2d, cocosbuilder, engine level code and its submodules, pubnub, cocos3d, apportable, openGL, client:server APIs, GAE, MPL)"], "Recruiting": ["Effectively assist with recruiting efforts for discipline, participating in recruiting steps below, ultimately leading to excellent hires", "Own recruiting steps below as DRI for open reqs, ultimately leading to excellent hires", "Improve recruiting process", "Design recruiting process for new role", "Partner with the recruiting team effectively", "Key recruiting steps include: creation of job description, sourcing of candidates, phone and onsite interviews, homework creation and evaluation, reference checking"], "Tools / Pipeline / Platform": ["Mastery of all of the major components of our engine (e.g. logging, crash reports, IAP, achievements, real time, etc.)", "Deep understanding of all our current and potential future client games. Understands the use cases of our products, how they're similar, and how the differ.", "Understands the workflows of other disciplines on their team and can utilize this knowledge when designing features/code/interfaces to increase their effectiveness (e.g. CSV structure, Split Test Option designs, buildng the right debug / test menu functionality)", "Integrate new iOS APIs in an extendable way that can be used across games (e.g. creating a wrapper around a new iOS API that can be easily integrated into any PG game, and can be used as a multiplexer for Apportable/etc., e.g. PEScreenRecordingManager)", "Design new client:server APIs for new features", "Design a new core component and/or a self-contained modular library that creates a step function improvement for the company (e.g. MPL)", "Deep understanding of the tools we've built, and able to modify and improve them (e.g., LevelEditor, Autobot)", "Deep understanding of the workflows for our content creators. Able to use knowledge to create tools and systems to automate their workflows and increase the effectiveness of our content creators. (e.g. getCCBVariables script, creating automated scripts that figure out the bundle size, ptimer infrastructure, improving build scripts, etc.)"], "Networking, Multiplayer, Social": ["Completely understands the implementation of at least one scalable real-time networking system tested with millions of players", "Has experience with several real time communication libraries / engines, such as Pubnub & PERealtime, Photon, SmartFox, Firebase, etc.", "Has experience integrating or implementing various social system technologies, such as chat, message boards, guilds, global events and social media", "Completely understands variations of lockstep and CS architectures, and can explain the tradeoffs and nuances in each variation.\n", "Understands the architectural requirements of multiplayer games (that may be nonexistent or soft requirements for single player games).", "Knows methods for partitioning virtual space and managing communication channels to support large persistent worlds", "Understands how various robust products handle authentication, with appropriate level of security (secure_rpcc, signing, sessions), scalability, accessibility (xdevice, server side), reliability, and a well defined API", "Understands how to build scalable, fault tolerant distributed systems that handle systems like game instantiation, matchmaking, authentication and player ranking.", "Knows best practices for optimizing bandwidth and latency during realtime multiplayer gameplay, as well as ways to deal with latency, such as hiding it with visuals, pausing / dropping players, reducing expensive quality or send rates, etc.", "Knows of many common security vulnerabilities in games, and how to handle each one. Has experience managing the tradeoff between security and other values, such as performance and costs.", "Has a deep understanding of networking infrastructure, hardware and low level networking concepts: routers, wireless, protocols, firewalls, etc.", "Has experience analyzing and debugging networking issues on various levels and abstractions, using a variety of industry standard network analysis tools."], "Institutional Technology": ["Writes easily understandable and well organized documentation for all features, enabling them to be handed off seamlessly", "Takes PG's long term needs into account when writing code (balancing short term deadlines vs. long term debt, scalability, etc.)", "Proactively experiments with and brings new tech solutions into our teams & products to keep PG at the forefront of technology."], "(General)": ["Teams that the individual is member of achieve great business results", "Work that contributes directly to achieving or exceeding company and team goals", "Same as above, across other teams, with company wide impact", "Creation of systems and structures to multiply the effectiveness of others", "Living up to personal commitments; doing what you say and being present/available whenever needed", "Demonstrated confidence and excellent judgement to make decisions", "Trusted by members of team, as well as by other teams across the company", "Understanding of the entire business; ability to critically evaluate areas outside of own expertise", "Ability to anticipate and deal with obstacles and risks", "Stewardship of the long term values of the company"], "Analytics": ["Redshift expertise (columnar storage, sort keys, parallelism and other parameters, storage schemes and efficiency, custom functions, ssd vs hd perf and cost tradeoffs, admin intervention, ability to work with AWS support staff, partitioning, windowing, query scaling)", "Analytics collaborations:  Recover, fix and digest improperly formatted analytics data at scale", "SQL Mastery", "Payment systems (e.g., episode portal writers; including accounting, security, transparency, resilience, ... also ad partners)", "Task system (job processing, scaling, debugging, monitoring, tooling)", "Rollup design and execution", "Marketing tools and integrations (click/impression tracking, reporting API integration, working with non-technical third parties, referrals, promotions, rich messaging, ", "Low level debugging (e.g., bit flips breaking signing, swap space issues, OOM killer randomly killing process)", "Manage with cloud providers and costs (troubleshoot billing blips, negotiating favorable terms, prodicting cloud costs for new services, cost-effectively support high volume analytics)"], "Leadership": ["Mentor all members of the team; serve as role model", "Possess the craft to personally tackle some of the most challenging problems the team faces", "Articulate a higher level and longer term vision for the team; inspire the team to work towards that vision; get buy-in from other teams", "Create strong team identity", "Understand strengths and weaknesses of team members and set them up for success", "Empower team members to take ownership, with good judgement as to when to interfere and assist with problems", "Own happiness and retention of the team; keep the team motivated even if the going gets tough", "Can make the tough decisions", "Able to make and rationalize tradeoffs with imperfect information and limited resources", "Have general understanding of other disciplines", "Significantly improve output of team"], "Game Play Engineering": ["Has strong production and communication skills, making good tradeoffs, good tools and pipelines, and accurate assessments of scope, scheduling, priorities, pipeline requirements and risk.", "Understands basic game design concepts and has played many games for reference, especially in competitive/related games", "Mastery of Objective-C and the iOS platform (e.g. proper application of KVOs, memory management, etc.)", "Has experience building common gameplay systems, such as tutorials, questing, achievements, status effects, inventory, UI, camera, navigation and AI.", "Knows how content is authored (scripting systems, tools, XML, CSVs, SQL, prefabs, spawners, triggers, etc.) in various game systems, and can choose suitable data structures, formats and authoring tools for a given game.", "Understands which architectural decisions are the most impactful and irreversible (choice of programming language, engine, modularity, tool set + data format, 2D vs 3D, etc.)", "Able to effectively work in a cross-disciplinary team to create features given a spec.  Knows how to ask designers for the appropriate level of detail before implementing a feature.", "Knows a variety of techniques and examples for implementing good game feel", "Demonstrates a tendency to focus on user experience when solving problems, opening up possibilities for creative solutions (\"hacks\").", "Is well versed in common game programming patterns and effectively applies them in development. For example, patterns for game loops, inputs, GUI, and communication / event systems.", "Leads the design of major game core components (e.g. creating a marshalling bridge across language barriers (e.g. Lua/Obj-C) and integrating it into the game; advanced webview; etc.) ", "Has participated in every phase of game development, from prototyping to live.", "Has shipped several titles, and teaches others by drawing on the many lessons learned from both successes and failures."], "Cross-platform & Compilers": ["Can build and debug iOS and Android issues using Apportable", "Understands GDB and efficiently navigates and debugs crashes", "Understands Apportable API support and limitations and helps game teams write code that we can easily support on both iOS and Android", "Understands common C/C++ build systems e.g. Make, and integrates 3d party libraries and upgrades", "Understands GPU profiling tools specific to various GPU families and helps debug performance issues and visual corruption", "Understands the challenges associated with Device Fragmentation and helps game teams setup UI and other systems such that we can easily support our target set of devices", "Understands iOS system frameworks and can extend Apportable to support newer iOS APIs", "Understands Objective-C runtime internals and can extend Apportable to better support langauge features", "Understands Application life cycle on iOS and Android and implements features around startup, shutdown, backgrounding", "Understands JNI and can integrate native code with Android's OS features that are only available through Java", "Builds abstractions that effectively hide platform specific tweaks and make it easy to write cross-platform code ", "Stays updated on iOS, Android and XCode releases and implements new required features.", "Stays updated on toolchain updates and incorporates relevant improvements into Apportable", "Understands Assembly and debugs low level code in Apportable and port it to other architectures e.g. x86, 64-bit", "Understands how Operating System internals and how iOS / Android / Windows handle threading, signals, etc. and uses it to debug low level crashes / issues.", "Implements support for newer Objective-C language features into our toolchain and contributes it back to clang / llvm / gdb.\n\n", "Creates a domain-specific language when appopriate. e.g. episode script language."], "Graphics": ["Understands engine APIs and can create scenes and visual experiences in the game", "Undestands Asset Caching strategies & prewarming, applies that to optimize for performance and memory usage ", "Understands various approaches to Draw Loop and their impact on frame rate, animation, timing and visual quality", "Can debug common rendering issues in the game using the Frame Debugger", "Understands the Programmable Graphics Pipeline and can write simple Shaders to achieve and tune the look of the game", "Understands the underlying OpenGL graphics API and can initialize a context, setup buffers and render simple geometry", "Understands Texture Compression, pixel formats, GPU optimized data, mipmaps and uses it to make memory, performance, quality tradeoffs for artwork in the game", "Undestands CPU / GPU performance measurement using Instruments, their impact on FPS and perceived quality. ", "Understands the differences between various GPU families and applies that to tune Device specific settings.", "Understands how Concurrency works with OpenGL on mobile, both capabilities and limitations and applies that for safe async loading of assets in the game", "Understands Linear Algebra and can apply it to correctly implement various Projections and Camera systems.", "Understands the Post Processing pipeline and can implement post processing techniques like depth of field", "Understands skinned Animation & Blending; can investigate visual glitches and timing issues", "Understands our GPU simulated Particle System; can implement features that the vfx artists need to the effect that they want", "Understands various approaches for Lighting&Shadows, their performance / quality tradeoffs and implements a technique that meets the visual goals of the game.", "Stays updated on advancements in mobile rendering by attending GDC, WWDC etc. and incorporates this learning to inform our Engine roadmap", "Learns new graphics APIs e.g. Metal, Vulkan and extends our Engine to support these", "Prototypes and Researches novel rendering tech that will help distinguish our games from the competition."], "Business Results": ["Creates accurate project estimations for both small and large scale projects", "Works to understand what our business KPIs are and how engineering can help improve them", "Consistently ships major projects on time as the primary engineering owner, with high quality code and no live bugs", "Ships projects which meaningfully improve our core business KPIs related to monetization, retention, installs, or customer satisfaction.", "Ships projects which meaningfully improve our core technical KPIs (e.g., startup time, network latency, frames per second, crash rate, memory usage, disk usage, query time, etc.)", "Ships projects which are intended to increase our team's efficiency", "Ships projects which meaningfully decreases our infrastructure costs (e.g., improving server data usage)", "Architects and ships projects with global company needs in mind that can be pulled into a common library. ", "Proactively adds test coverage to their products & features (unit, automated, etc) to ensure code safety.", "Quickly triages, diagnoses, and solves live fires when they arise", "Meaningfully works to improve live operations (both features & processes) to achieve stronger business results ", "Capable of being the engineering DRI for an app update (both iOS & Android)", "Ships a new app or game (iOS & Android)", "Efficiently solves super hard detective-work debugging issues that improve live customer satisfaction", "Tackles tech debt and adds test coverage to risky areas of the code.", "Creates an engineering roadmap for features that can improve our KPI driven business metrics"], "Mentorship": ["Significantly improve craft proficiency of mentees within team, as well as on other teams across related functions", "Serve as excellent manager of high performance teams, inspiring team members to develop their craft and do great work, leading to strong business and product results", "Serve as excellent manager of managers", "Develop management system and teach it to other managers", "Turnaround or address low performing team members", "Master the fundamentals of management, including: providing career guidance to other team members, onboarding new team members, assuming responsibility for single and multiple team members (day to day visibility, course correction), authoring reviews"], "Team": ["Exhibit good work ethic; maintain a positive, can-do attitude; willingness to help out other team members", "Possess strong sense of ownership", "Proactively seek out and tackle issues both inside and outside your designated responsibility areas", "Respect other team members", "Recognize that good ideas can come from anywhere, regardless of position or experience", "Put other team members in positions where they can succeed", "Communicate well", "Embrace and demonstrate company values", "Serve as good example to other team members", "Set aside self interest and act with company first perspective"], "Technological Leadership": ["Owner of and expert in a major part of the PG codebase and able to articulate clearly the scaling and reliability limits of that code", "Broad knowledge of every feature in the team's game", "Sets code quality standards for the team and ensures they are being met", "Seen as a role model and mentor for every technical member of the team", "Constantly learning new technologies and techniques and teaching the team how they can be appropriately applied", "Architects a major component without under- or over-engineering and leads the team in its successful, on time implementation", "Seen as the go-to expert for design reviews", "Successfully leads cross-team / cross-functional projects", "Provides deep design insight and guidance for complex, long-lived, overlapping projects", "Can reference choices made in successful game engines and architectures. Analyzes tradeoffs around using different engines and leads decision-making and implementation", "Makes build/buy decisions, factoring in the cost of maintenance in the build path", "Plays a significant role in developing multi-year technology strategy for critical areas of PG spanning multiple systems and teams", "Viewed as an industry expert and sought after for technical guidance in area of specialty"]};
+var timestamp = '14:57:13 12/22/16 PST'
+
+</script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular.min.js"></script>
+<script>
+angular.module('MatrixViewerApp', [
+  'MatrixViewerApp.controllers'
+]);
+
+angular.module('MatrixViewerApp.controllers', []).
+controller('matrixViewerController', function($scope) {
+    $scope.disciplines = disciplines;
+    $scope.categories = categories;
+    $scope.skills = skills;
+    $scope.timestamp = timestamp;
+    $scope.curDisc = disciplines[0];
+
+    $scope.pinned = {};
+    for (var i = 0; i < disciplines.length; i++) {
+      $scope.pinned[disciplines[i]] = false;
+    }
+    // Restore saved pins
+    if (location.hash) {
+      var pinned = location.hash.substring(1).split(',');
+      for (var i = 0; i < pinned.length; i++) {
+        $scope.pinned[$scope.disciplines[parseInt(pinned[i])]] = true;
+      }
+    }
+
+    $scope.setDiscipline = function(discipline) {
+      $scope.curDisc = discipline;
+    }
+
+    $scope.togglePin = function(discipline) {
+      $scope.pinned[discipline] = !$scope.pinned[discipline];
+      // Save pin in hash
+      var pinIndex = $scope.disciplines.indexOf(discipline);
+      var strIndex = pinIndex < 10 ? '0' + pinIndex : '' + pinIndex;
+      var hash = location.hash;
+      if ($scope.pinned[discipline]) { // Pinned, add it
+        hash += (hash) ? ',' + strIndex : '#' + strIndex;
+      } else { // Unpinned
+        hash = hash.replace(',' + strIndex, '');
+        hash = hash.replace(strIndex + ',', '');
+        hash = hash.replace('#' + strIndex, '');
+      }
+      location.hash = hash;
+    }
+
+    $scope.sortKey = function(discipline) {
+      var index = $scope.disciplines.indexOf(discipline);
+      return ($scope.pinned[discipline] ? 'a ' : 'b ') + (index < 10 ? '0' + index : index);
+    }
+});
+</script>
+</body>
+</html>
+
