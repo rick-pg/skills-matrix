@@ -119,6 +119,10 @@ def get_matrix_contents():
     return discipline, category, skills
 
 
+# Move to the home directory before running
+os.chdir(os.path.expanduser('~/skills-matrix'))
+
+# Get contents and build file
 discipline, category, skills = get_matrix_contents()
 index_file = open('matrix/index.html', 'w')
 print >>index_file, """
