@@ -1,3 +1,4 @@
+# Move to the home directory before running
 import argparse
 import httplib2
 import time
@@ -7,6 +8,7 @@ import re
 import subprocess
 import sys
 
+os.system('whoami')
 sys.path.append('.')
 
 from apiclient import discovery
@@ -117,10 +119,6 @@ def get_matrix_contents():
                 skills[discipline[i]].append(row[i])
 
     return discipline, category, skills
-
-
-# Move to the home directory before running
-os.chdir(os.path.expanduser('~/skills-matrix'))
 
 # Get contents and build file
 discipline, category, skills = get_matrix_contents()
@@ -308,15 +306,15 @@ controller('matrixViewerController', function($scope) {
 index_file.close()
 
 # Check the diff to see if we should commit the new file
-command = 'git diff --stat'.split()
+command = '/usr/local/bin/git diff --stat'.split()
 for line in run_command(command):
     match = re.search('\s+matrix/index.html\s+\|\s+(\d+)', line)
     if match:
         if int(match.group(1)) > 2:
             print "content changed... committing updates"
-            os.system("git add matrix/index.html")
-            os.system("git commit -m \"content update on %s\"" % time.strftime('%X %x %Z'))
-            os.system("git push origin master")
+            os.system("/usr/local/bin/git add matrix/index.html")
+            os.system("/usr/local/bin/git commit -m \"content update on %s\"" % time.strftime('%X %x %Z'))
+            os.system("/usr/local/bin/git push origin master")
         else:
             print "no content update to commit: %s" % line
 
