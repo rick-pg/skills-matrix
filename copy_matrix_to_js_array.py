@@ -3,6 +3,8 @@ import httplib2
 import time
 import json
 import os
+import re
+import subprocess
 import sys
 
 sys.path.append('.')
@@ -22,6 +24,16 @@ except ImportError:
 SCOPES = 'https://www.googleapis.com/auth/spreadsheets.readonly'
 CLIENT_SECRET_FILE = 'client_secret.json'
 APPLICATION_NAME = 'Google Sheets API Python Quickstart'
+
+
+def run_command(command):
+    p = subprocess.Popen(command,
+                         stdout=subprocess.PIPE,
+                         stderr=subprocess.STDOUT)
+    if p.stderr:
+        for err in iter(p.stderr.readline, b''):
+            print err
+    return iter(p.stdout.readline, b'')
 
 
 def get_credentials():
@@ -108,7 +120,8 @@ def get_matrix_contents():
 
 
 discipline, category, skills = get_matrix_contents()
-print """
+index_file = open('matrix/index.html', 'w')
+print >>index_file, """
 <html>
 <head>
     <title>Engineering Skills Matrix</title>
@@ -225,12 +238,12 @@ print """
 <script>
 """
 
-print "var disciplines = %s;" % json.dumps(discipline)
-print "var categories = %s;" % json.dumps(category)
-print "var skills = %s;" % json.dumps(skills)
-print "var timestamp = '%s'" % time.strftime('%X %x %Z')
+print >>index_file, "var disciplines = %s;" % json.dumps(discipline)
+print >>index_file, "var categories = %s;" % json.dumps(category)
+print >>index_file, "var skills = %s;" % json.dumps(skills)
+print >>index_file, "var timestamp = '%s'" % time.strftime('%X %x %Z')
 
-print """
+print >>index_file, """
 </script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular.min.js"></script>
@@ -287,6 +300,19 @@ controller('matrixViewerController', function($scope) {
 </script>
 </body>
 </html>
-
 """
+index_file.close()
+
+# Check the diff to see if we should commit the new file
+command = 'git diff --stat'.split()
+for line in run_command(command):
+    match = re.search('\s+matrix/index.html\s+\|\s+(\d+)', line)
+    if match:
+        if int(match.group(1)) > 2:
+            print "content changed... committing updates"
+            os.system("git add matrix/index.html")
+            os.system("git commit -m \"content update on %s\"" % time.strftime('%X %x %Z'))
+            os.system("git push origin master")
+        else:
+            print "no content update to commit: %s" % line
 
