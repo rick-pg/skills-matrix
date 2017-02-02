@@ -8,8 +8,8 @@ import re
 import subprocess
 import sys
 
-os.system('whoami')
 sys.path.append('.')
+os.environ["HOME"] = "/Users/ricksanders"
 
 from apiclient import discovery
 from collections import defaultdict
@@ -90,7 +90,8 @@ def get_matrix_contents():
     service = discovery.build('sheets', 'v4', http=http,
                               discoveryServiceUrl=discoveryUrl)
 
-    spreadsheetId = '14lyNCcKWORmZ-jd8Dd8HO8jX-858evEbUjh0nCJ7hKE'
+    # spreadsheetId = '14lyNCcKWORmZ-jd8Dd8HO8jX-858evEbUjh0nCJ7hKE'
+    spreadsheetId = '1krUyl_fHXn5nDIwjd5neo70zQl1-HNJeXRet6P-ltok'
     rangeName = 'Full Matrix!A1:T30'
     result = service.spreadsheets().values().get(
         spreadsheetId=spreadsheetId, range=rangeName).execute()
