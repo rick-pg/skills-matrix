@@ -123,7 +123,7 @@ def get_matrix_contents():
 
 # Get contents and build file
 discipline, category, skills = get_matrix_contents()
-index_file = open('matrix/index.html', 'w')
+index_file = open('matrix.html', 'w')
 print >>index_file, """
 <html>
 <head>
@@ -306,16 +306,6 @@ controller('matrixViewerController', function($scope) {
 """
 index_file.close()
 
-# Check the diff to see if we should commit the new file
-command = '/usr/local/bin/git diff --stat'.split()
-for line in run_command(command):
-    match = re.search('\s+matrix/index.html\s+\|\s+(\d+)', line)
-    if match:
-        if int(match.group(1)) > 2:
-            print "content changed... committing updates"
-            os.system("/usr/local/bin/git add matrix/index.html")
-            os.system("/usr/local/bin/git commit -m \"content update on %s\"" % time.strftime('%X %x %Z'))
-            os.system("/usr/local/bin/git push origin master")
-        else:
-            print "no content update to commit: %s" % line
+# Copy the script to the build server
+os.system("scp matrix.html builder@10.20.2.191:/Users/builder/Sites/eng.html")
 
